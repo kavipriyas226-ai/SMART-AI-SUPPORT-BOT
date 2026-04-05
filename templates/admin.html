@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Panel</title>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+    background: linear-gradient(135deg, #dceeff, #eaf6ff);
+    padding: 30px;
+}
+
+.wrapper {
+    max-width: 1200px;
+    margin: auto;
+    background: rgba(255,255,255,0.85);
+    backdrop-filter: blur(12px);
+    border-radius: 20px;
+    padding: 25px;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.1);
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.header h1 {
+    color: #1976d2;
+    margin: 0;
+}
+
+.nav-links a {
+    margin-left: 15px;
+    text-decoration: none;
+    color: #1976d2;
+    font-weight: bold;
+}
+
+.nav-links a:hover {
+    text-decoration: underline;
+}
+
+.section {
+    margin-bottom: 30px;
+}
+
+.section h2 {
+    margin-bottom: 12px;
+    color: #0d47a1;
+}
+
+form input, form textarea {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 12px;
+    border-radius: 10px;
+    border: 1px solid #cfe3f6;
+    font-size: 14px;
+    outline: none;
+}
+
+form textarea {
+    resize: vertical;
+}
+
+form button {
+    padding: 12px 18px;
+    border: none;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #4da6ff, #1976d2);
+    color: white;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+form button:hover {
+    opacity: 0.95;
+}
+
+.table-box {
+    max-height: 260px;
+    overflow-y: auto;
+    border: 1px solid #dbeeff;
+    border-radius: 12px;
+    background: white;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th {
+    background: #e3f2fd;
+    padding: 12px;
+    text-align: left;
+    color: #0d47a1;
+    font-size: 14px;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+}
+
+td {
+    padding: 12px;
+    border-bottom: 1px solid #eee;
+    font-size: 14px;
+    vertical-align: top;
+}
+
+tr:hover td {
+    background: #f9fcff;
+}
+
+.action-link {
+    text-decoration: none;
+    font-weight: 600;
+    margin-right: 8px;
+}
+
+.edit-link {
+    color: #1976d2;
+}
+
+.delete-link {
+    color: #d32f2f;
+}
+
+.convert-link {
+    color: #2e7d32;
+}
+
+.action-link:hover {
+    text-decoration: underline;
+}
+
+.badge {
+    display: inline-block;
+    padding: 4px 8px;
+    border-radius: 8px;
+    font-size: 12px;
+    background: #e3f2fd;
+    color: #1976d2;
+    margin-bottom: 8px;
+}
+
+.empty-text {
+    color: #607d8b;
+    font-size: 14px;
+    padding: 14px;
+}
+
+@media (max-width: 768px) {
+    body {
+        padding: 12px;
+    }
+
+    .wrapper {
+        padding: 16px;
+    }
+
+    .header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .nav-links a {
+        margin-left: 0;
+        margin-right: 12px;
+    }
+
+    table, thead, tbody, th, td, tr {
+        font-size: 13px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="wrapper">
+
+    <div class="header">
+        <h1>Admin Dashboard</h1>
+        <div class="nav-links">
+            <a href="/">Home</a>
+            <a href="/logout">Logout</a>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>Add FAQ</h2>
+        <span class="badge">Admin Control</span>
+        <form method="POST" action="/add-faq">
+            <input type="text" name="question" placeholder="Enter question" required>
+            <textarea name="answer" placeholder="Enter answer" rows="3" required></textarea>
+            <button type="submit">Add FAQ</button>
+        </form>
+    </div>
+
+    <div class="section">
+        <h2>FAQ Data</h2>
+        <div class="table-box">
+            <table>
+                <tr>
+                    <th>ID</th>
+                    <th>Question</th>
+                    <th>Answer</th>
+                    <th>Actions</th>
+                </tr>
+
+                {% if faq_data %}
+                    {% for row in faq_data %}
+                    <tr>
+                        <td>{{ row.id }}</td>
+                        <td>{{ row.question }}</td>
+                        <td>{{ row.answer }}</td>
+                        <td>
+                            <a href="/edit-faq/{{ row.id }}" class="action-link edit-link">Edit</a>
+                            <a href="/delete-faq/{{ row.id }}" class="action-link delete-link" onclick="return confirm('Delete this FAQ?')">Delete</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr>
+                        <td colspan="4" class="empty-text">No FAQ data available.</td>
+                    </tr>
+                {% endif %}
+            </table>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>Unknown Questions</h2>
+        <div class="table-box">
+            <table>
+                <tr>
+                    <th>ID</th>
+                    <th>Question</th>
+                    <th>Actions</th>
+                </tr>
+
+                {% if unknown_questions %}
+                    {% for row in unknown_questions %}
+                    <tr>
+                        <td>{{ row.id }}</td>
+                        <td>{{ row.question }}</td>
+                        <td>
+                            <a href="/convert-unknown/{{ row.id }}" class="action-link convert-link">Convert to FAQ</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr>
+                        <td colspan="3" class="empty-text">No unknown questions found.</td>
+                    </tr>
+                {% endif %}
+            </table>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>Chat History</h2>
+        <div class="table-box">
+            <table>
+                <tr>
+                    <th>ID</th>
+                    <th>User Question</th>
+                    <th>Bot Answer</th>
+                </tr>
+
+                {% if chat_history %}
+                    {% for row in chat_history %}
+                    <tr>
+                        <td>{{ row.id }}</td>
+                        <td>{{ row.user_question }}</td>
+                        <td>{{ row.bot_answer }}</td>
+                    </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr>
+                        <td colspan="3" class="empty-text">No chat history available.</td>
+                    </tr>
+                {% endif %}
+            </table>
+        </div>
+    </div>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Edit FAQ</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #dceeff, #eaf6ff);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            padding: 20px;
+        }
+
+        .box {
+            width: 420px;
+            background: rgba(255,255,255,0.85);
+            backdrop-filter: blur(14px);
+            padding: 28px;
+            border-radius: 20px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.12);
+        }
+
+        h2 {
+            margin: 0 0 15px;
+            color: #1976d2;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 12px;
+            border-radius: 10px;
+            border: 1px solid #cfe3f6;
+            font-size: 14px;
+            outline: none;
+        }
+
+        textarea {
+            resize: vertical;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #4da6ff, #1976d2);
+            color: white;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        button:hover {
+            opacity: 0.95;
+        }
+
+        .back {
+            display: inline-block;
+            margin-top: 14px;
+            text-decoration: none;
+            color: #1976d2;
+            font-size: 14px;
+        }
+
+        .back:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 520px) {
+            .box {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="box">
+    <h2>Edit FAQ</h2>
+
+    <form method="POST">
+        <input type="text" name="question" value="{{ faq.question }}" required>
+        <textarea name="answer" rows="4" required>{{ faq.answer }}</textarea>
+
+        <button type="submit">Update FAQ</button>
+    </form>
+
+    <a href="/admin" class="back">← Back to Dashboard</a>
+</div>
+
+</body>
+</html>

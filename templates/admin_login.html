@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login</title>
+
+    <style>
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #dceeff, #eaf6ff);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .login-box {
+            width: 380px;
+            background: rgba(255,255,255,0.82);
+            backdrop-filter: blur(18px);
+            padding: 30px;
+            border-radius: 22px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.12);
+            text-align: center;
+        }
+
+        .icon {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 18px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #4da6ff, #1976d2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 34px;
+            color: white;
+        }
+
+        h1 {
+            margin: 0 0 10px;
+            color: #0d47a1;
+        }
+
+        p {
+            color: #607d8b;
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px 14px;
+            margin-bottom: 14px;
+            border: 1px solid #cfe3f6;
+            border-radius: 12px;
+            font-size: 14px;
+            outline: none;
+        }
+
+        .password-box {
+            position: relative;
+        }
+
+        .toggle-password {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            font-size: 14px;
+            color: #1976d2;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 14px;
+            background: linear-gradient(135deg, #4da6ff, #1976d2);
+            color: white;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.2s ease;
+        }
+
+        button:hover {
+            opacity: 0.95;
+        }
+
+        .error {
+            color: #d32f2f;
+            margin-bottom: 12px;
+            font-size: 13px;
+        }
+
+        .back {
+            display: inline-block;
+            margin-top: 15px;
+            color: #1976d2;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .back:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="login-box">
+    <div class="icon">🔐</div>
+
+    <h1>Admin Login</h1>
+    <p>Only authorized users can access the admin panel.</p>
+
+    {% if error %}
+        <div class="error">{{ error }}</div>
+    {% endif %}
+
+    <form method="POST" action="/admin-login" id="loginForm">
+
+        <input type="text" name="username" placeholder="Enter username" required>
+
+        <div class="password-box">
+            <input type="password" name="password" id="password" placeholder="Enter password" required>
+            <span class="toggle-password" onclick="togglePassword()">Show</span>
+        </div>
+
+        <button type="submit">Login</button>
+    </form>
+
+    <a href="/" class="back">← Back to Welcome Page</a>
+</div>
+
+<script>
+    function togglePassword() {
+        const pass = document.getElementById("password");
+        if (pass.type === "password") {
+            pass.type = "text";
+        } else {
+            pass.type = "password";
+        }
+    }
+
+    // Enter key submit improvement
+    document.getElementById("loginForm").addEventListener("keypress", function(e) {
+        if (e.key === "Enter") {
+            this.submit();
+        }
+    });
+</script>
+
+</body>
+</html>

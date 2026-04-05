@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Company Support Assistant</title>
+
+    <style>
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: linear-gradient(135deg, #dff1ff, #edf8ff);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .chat-wrapper {
+            width: 420px;
+            height: 720px;
+            background: rgba(255, 255, 255, 0.88);
+            backdrop-filter: blur(14px);
+            border-radius: 28px;
+            overflow: hidden;
+            box-shadow: 0 20px 45px rgba(34, 110, 180, 0.18);
+            border: 1px solid rgba(255, 255, 255, 0.7);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #5cbcff, #2e8ff7);
+            color: white;
+            padding: 18px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .header-avatar {
+            width: 46px;
+            height: 46px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .header-title {
+            font-size: 22px;
+            font-weight: 700;
+        }
+
+        .header-subtitle {
+            font-size: 13px;
+            margin: 0;
+        }
+
+        .header-status {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: red;
+        }
+
+        .intro-strip {
+            padding: 12px;
+            background: #eff1f2;
+            font-size: 13px;
+        }
+
+        .chat-box {
+            flex: 1;
+            padding: 16px;
+            overflow-y: auto;
+            background: linear-gradient(to bottom, #87eeee, #eee8eb);
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .message-row {
+            display: flex;
+            align-items: flex-end;
+            gap: 8px;
+        }
+
+        .user { justify-content: flex-end; }
+        .bot { justify-content: flex-start; }
+
+        .message {
+            max-width: 70%;
+            padding: 12px;
+            border-radius: 15px;
+            font-size: 14px;
+        }
+
+        .message.user {
+            background: #2f95ff;
+            color: white;
+        }
+
+        .message.bot {
+            background: white;
+        }
+
+        .message-avatar {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+        }
+
+        .suggestions {
+            padding: 10px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            background: #dcefff;
+        }
+
+        .suggestions button {
+            padding: 6px 10px;
+            border: none;
+            border-radius: 20px;
+            background: white;
+            cursor: pointer;
+        }
+
+        .input-area {
+            display: flex;
+            padding: 10px;
+            gap: 5px;
+        }
+
+        .input-area input {
+            flex: 1;
+            padding: 10px;
+            border-radius: 20px;
+            border: 1px solid #ccc;
+        }
+
+        .input-area button {
+            padding: 10px;
+            border-radius: 20px;
+            background: #2e8ff7;
+            color: white;
+            border: none;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="chat-wrapper">
+
+    <!-- HEADER -->
+    <div class="header">
+        <img src="{{ url_for('static', filename='images/avatar.gif') }}" class="header-avatar">
+        <div>
+            <div class="header-title">AI Assistant</div>
+            <p class="header-subtitle">Company Support • Online</p>
+        </div>
+        <div class="header-status"></div>
+    </div>
+
+    <!-- INFO -->
+    <div class="intro-strip">
+        Ask about services, pricing, apps, support.
+    </div>
+
+    <!-- CHAT -->
+    <div class="chat-box" id="chat">
+
+        {% if chat_messages %}
+            {% for msg in chat_messages %}
+
+                {% if msg.sender == "user" %}
+                    <div class="message-row user">
+                        <div class="message user">{{ msg.text }}</div>
+                        <div class="message-avatar">👤</div>
+                    </div>
+
+                {% else %}
+                    <div class="message-row bot">
+                        <img src="{{ url_for('static', filename='images/avatar.gif') }}" class="message-avatar">
+                        <div class="message bot">{{ msg.text }}</div>
+                    </div>
+                {% endif %}
+
+            {% endfor %}
+        {% else %}
+            <div class="message-row bot">
+                <img src="{{ url_for('static', filename='images/avatar.gif') }}" class="message-avatar">
+                <div class="message bot">
+                    Hello! Welcome to our Ammus support assistant.
+                </div>
+            </div>
+        {% endif %}
+
+        <!-- TYPING -->
+        <div id="typing" style="display:none;">
+            <div class="message-row bot">
+                <img src="{{ url_for('static', filename='images/avatar.gif') }}" class="message-avatar">
+                <div class="message bot">Typing...</div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- SUGGESTIONS -->
+    <div class="suggestions">
+        {% for question in suggested_questions %}
+        <form method="POST">
+            <input type="hidden" name="message" value="{{ question }}">
+            <button type="submit">{{ question }}</button>
+        </form>
+        {% endfor %}
+    </div>
+
+    <!-- INPUT -->
+    <form method="POST" class="input-area">
+        <input type="text" name="message" placeholder="Ask..." required>
+        <button type="submit">Send</button>
+    </form>
+
+</div>
+
+<script>
+    var chat = document.getElementById("chat");
+    chat.scrollTop = chat.scrollHeight;
+
+    const form = document.querySelector(".input-area");
+    const typing = document.getElementById("typing");
+
+    form.addEventListener("submit", function () {
+        typing.style.display = "block";
+    });
+</script>
+
+</body>
+</html>

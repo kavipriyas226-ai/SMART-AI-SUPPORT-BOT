@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Convert Unknown to FAQ</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #dceeff, #eaf6ff);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            padding: 20px;
+        }
+
+        .box {
+            width: 420px;
+            background: rgba(255,255,255,0.88);
+            backdrop-filter: blur(14px);
+            border-radius: 20px;
+            padding: 28px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.12);
+        }
+
+        h2 {
+            margin: 0 0 16px;
+            color: #1976d2;
+            text-align: center;
+        }
+
+        label {
+            font-weight: 600;
+            color: #0d47a1;
+            display: block;
+            margin-top: 12px;
+            margin-bottom: 6px;
+            font-size: 14px;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 12px;
+            border-radius: 12px;
+            border: 1px solid #cfe3f6;
+            font-size: 14px;
+            outline: none;
+        }
+
+        input {
+            background: #f5fbff;
+            color: #607d8b;
+        }
+
+        textarea {
+            resize: vertical;
+        }
+
+        button {
+            width: 100%;
+            margin-top: 18px;
+            padding: 12px;
+            border: none;
+            border-radius: 14px;
+            background: linear-gradient(135deg, #4da6ff, #1976d2);
+            color: white;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        button:hover {
+            opacity: 0.95;
+        }
+
+        .back-link {
+            display: block;
+            margin-top: 14px;
+            text-align: center;
+            color: #1976d2;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 520px) {
+            .box {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="box">
+
+    <h2>Convert Unknown to FAQ</h2>
+
+    <form method="POST">
+        
+        <label>Question</label>
+        <input type="text" value="{{ unknown_question.question }}" readonly>
+
+        <label>Answer</label>
+        <textarea name="answer" rows="5" placeholder="Enter answer for this question..." required autofocus></textarea>
+
+        <button type="submit">Convert to FAQ</button>
+    </form>
+
+    <a href="/admin" class="back-link">← Back to Admin Panel</a>
+
+</div>
+
+</body>
+</html>

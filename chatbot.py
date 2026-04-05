@@ -8,8 +8,12 @@ from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
 from dotenv import load_dotenv
 import os
-
+import nltk
 load_dotenv()
+
+nltk.download("stopwords")
+nltk.download("punkt")
+
 
 
 class CompanyChatbot:
